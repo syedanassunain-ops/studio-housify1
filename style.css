@@ -146,40 +146,42 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
 }
 .hero-content {
   position: relative; z-index: 2;
-  padding-bottom: 0;
+  padding-bottom: 80px;
   width: 100%; max-width: 1500px;
   margin: 0 auto;
-  padding-left: clamp(20px, 4vw, 60px);
-  padding-right: clamp(20px, 4vw, 60px);
+  padding-left: clamp(20px, 6vw, 100px);
+  padding-right: clamp(20px, 6vw, 100px);
 }
 @media (min-width: 769px) {
   .hero-content {
-    padding-bottom: clamp(15px, 2.5vh, 40px);
-    margin-top: 120px;
+    padding-bottom: 120px;
+    margin-top: 180px;
   }
 }
-.hero-tag {
-  font-family: var(--font-body); font-size: 0.7rem; font-weight: 500;
+.hero-eyebrow {
+  font-family: var(--font-body); font-size: 0.95rem; font-weight: 400;
   letter-spacing: 4px; text-transform: uppercase;
-  color: var(--accent); margin-bottom: 24px;
+  color: rgba(255,255,255,0.65); margin-bottom: 20px;
+  display: block;
   opacity: 0; transform: translateY(20px);
   animation: fadeIn 1s 0.3s var(--ease) forwards;
 }
 .hero-title {
-  font-family: var(--font-heading); font-size: clamp(2.2rem, 4vw, 4.8rem);
-  font-weight: 300; line-height: 1.1; color: var(--white);
-  margin-bottom: 22px; letter-spacing: -1px;
+  font-family: var(--font-heading); font-size: clamp(2.8rem, 5vw, 5.5rem);
+  font-weight: 300; line-height: 1.15; color: var(--off-white);
+  margin-bottom: 32px; letter-spacing: 1px;
+  max-width: 1100px;
   opacity: 0; transform: translateY(30px);
-  animation: fadeIn 1.2s 0.5s var(--ease) forwards;
+  animation: fadeIn 1.2s 0.3s var(--ease) forwards;
 }
 .hero-line-1 { display: block; }
 .hero-line-2 { display: block; font-style: italic; color: rgba(255,255,255,0.6); }
 
 .hero-sub {
-  font-size: 1.05rem; font-weight: 300; color: rgba(255,255,255,0.6);
-  max-width: 500px; line-height: 1.75;
+  font-family: var(--font-body); font-size: clamp(0.95rem, 1.2vw, 1.1rem); font-weight: 300; color: rgba(255,255,255,0.7);
+  max-width: 750px; line-height: 1.6;
   opacity: 0; transform: translateY(20px);
-  animation: fadeIn 1s 0.8s var(--ease) forwards;
+  animation: fadeIn 1s 0.6s var(--ease) forwards;
 }
 .hero-scroll {
   position: absolute; bottom: 40px; right: clamp(20px, 4vw, 60px);
@@ -643,14 +645,32 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
   border: 1px solid rgba(255,255,255,0.35);
 }
 .btn-outlined:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.6); }
+
+.btn-minimal {
+  background: transparent;
+  color: var(--white);
+  border: 1px solid rgba(255,255,255,0.4);
+  padding: 14px 32px;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  transition: all 0.4s var(--ease);
+}
+.btn-minimal:hover {
+  background: rgba(255,255,255,1);
+  color: var(--black);
+  border-color: rgba(255,255,255,1);
+}
+
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  margin-top: 36px;
+  margin-top: 40px;
   opacity: 0;
   transform: translateY(20px);
-  animation: fadeIn 1s 1s var(--ease) forwards;
+  animation: fadeIn 1s 0.9s var(--ease) forwards;
 }
 
 
