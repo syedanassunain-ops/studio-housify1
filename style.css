@@ -70,7 +70,7 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
 }
 .nav-logo img {
   height: 100%; width: auto; object-fit: contain;
-  transform: scale(1.55);
+  transform: scale(1.72);
   transform-origin: left center;
   filter: drop-shadow(0px 0px 8px rgba(255, 255, 255, 0.6)) drop-shadow(0px 0px 2px rgba(255, 255, 255, 0.9));
   transition: all 0.4s var(--ease);
