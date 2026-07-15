@@ -158,7 +158,7 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
   font-family: var(--font-heading); font-size: clamp(2.8rem, 5vw, 5.5rem);
   font-weight: 300; line-height: 1.15; color: var(--off-white);
   margin-bottom: 32px; letter-spacing: 1px;
-  max-width: 1100px;
+  max-width: 900px;
   opacity: 0; transform: translateY(30px);
   animation: fadeIn 1.2s 0.3s var(--ease) forwards;
 }
@@ -167,7 +167,7 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
 
 .hero-sub {
   font-family: var(--font-body); font-size: clamp(0.95rem, 1.2vw, 1.1rem); font-weight: 300; color: rgba(255,255,255,0.7);
-  max-width: 750px; line-height: 1.6;
+  max-width: 600px; line-height: 1.6;
   opacity: 0; transform: translateY(20px);
   animation: fadeIn 1s 0.6s var(--ease) forwards;
 }
