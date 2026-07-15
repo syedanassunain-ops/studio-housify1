@@ -47,7 +47,7 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
 /* ---- NAVBAR (Grandeur-style compact header) ---- */
 .navbar {
   position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
-  padding: 18px 0;
+  padding: 28px 0;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.4s ease, padding 0.4s ease;
   transform: translateY(0);
 }
@@ -57,7 +57,7 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
 .navbar.scrolled {
   background: rgba(10,10,10,0.95);
   backdrop-filter: blur(20px);
-  padding: 10px 0;
+  padding: 16px 0;
   border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 .nav-inner {
@@ -76,46 +76,34 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
   transition: all 0.4s var(--ease);
 }
 .nav-logo:hover img { opacity: 0.85; }
-.nav-menu { display: flex; align-items: center; gap: 50px; }
-.nav-links { display: flex; gap: 36px; }
+.nav-menu { display: flex; align-items: center; gap: 60px; }
+.nav-links { display: flex; gap: 48px; }
 .nav-links a {
-  color: rgba(255,255,255,0.7); font-size: 0.72rem; font-weight: 500;
-  letter-spacing: 2.5px; text-transform: uppercase;
-  transition: color 0.3s ease; position: relative;
+  color: rgba(255,255,255,0.65); font-size: 0.72rem; font-weight: 400;
+  letter-spacing: 3.5px; text-transform: uppercase;
+  transition: color 0.4s ease; position: relative;
 }
 .nav-links a::after {
-  content: ''; position: absolute; bottom: -4px; left: 0;
-  width: 0; height: 1px; background: var(--accent);
-  transition: width 0.4s var(--ease);
+  content: ''; position: absolute; bottom: -6px; left: 0;
+  width: 100%; height: 1px; background: rgba(255,255,255,0.8);
+  transform: scaleX(0); transform-origin: right;
+  transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
 }
 .nav-links a:hover { color: var(--white); }
-.nav-links a:hover::after { width: 100%; }
+.nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
 .nav-cta {
-  color: var(--white); font-size: 0.68rem; font-weight: 500;
-  letter-spacing: 2px; text-transform: uppercase;
-  padding: 12px 28px; 
-  border: 1px solid rgba(255,255,255,0.25);
-  position: relative;
-  overflow: hidden;
+  color: var(--white); font-size: 0.68rem; font-weight: 400;
+  letter-spacing: 3px; text-transform: uppercase;
+  padding: 14px 32px; 
+  border: 1px solid rgba(255,255,255,0.4);
   display: inline-block;
-  transition: border-color 0.4s var(--ease);
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
-.nav-cta::before {
-  content: '';
-  position: absolute;
-  top: 100%; left: 0; width: 100%; height: 100%;
-  background: var(--white);
-  transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-  z-index: 1;
+.nav-cta:hover { 
+  background: var(--white); 
+  color: var(--black); 
+  border-color: var(--white); 
 }
-.nav-cta span {
-  position: relative;
-  z-index: 2;
-  transition: color 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-}
-.nav-cta:hover { border-color: transparent; }
-.nav-cta:hover::before { transform: translateY(-100%); }
-.nav-cta:hover span { color: var(--black); }
 .menu-toggle { display: none; color: var(--white); font-size: 1.3rem; }
 
 /* ---- HERO (Fullscreen cinematic) ---- */
