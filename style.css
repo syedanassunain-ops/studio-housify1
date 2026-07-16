@@ -110,7 +110,7 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
 .hero {
   position: relative; height: 100vh; min-height: 700px;
   display: flex; align-items: flex-end;
-  overflow: hidden; background: var(--black);
+  overflow: hidden; background: #000000;
   z-index: 2;
 }
 .hero-video-wrap {
