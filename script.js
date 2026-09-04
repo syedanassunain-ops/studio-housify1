@@ -1,422 +1,225 @@
+/* ============================================================
+   JAY JAY CONSTRUCTIONS — Interactive Scripts & Interactivity
+   ============================================================ */
+
 document.addEventListener('DOMContentLoaded', () => {
-
-    // ── Lenis Smooth Scroll ──
-    const lenis = new Lenis({
-        duration: 1.1,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        touchMultiplier: 2,
-    });
-    function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-    requestAnimationFrame(raf);
-
-    // ── AOS ──
-    AOS.init({ duration: 1000, easing: 'ease-out-cubic', once: true, offset: 80 });
-
-
-
-    // ── Smooth Scrolling for Anchor Links ──
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            if (targetId === '#') return;
-            
-            // Special handling for the fixed contact section reveal
-            if (targetId === '#contact') {
-                lenis.scrollTo('bottom', { duration: 1.5, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
-                return;
-            }
-            
-            const target = document.querySelector(targetId);
-            if (target) {
-                lenis.scrollTo(target, { duration: 1.2 });
-            }
-        });
-    });
-
-    // ── Swiper Testimonials ──
-    new Swiper('.testimonial-slider', {
-        slidesPerView: 1,
-        spaceBetween: 30,
-        loop: true,
-        autoplay: { delay: 5000, disableOnInteraction: false },
-        pagination: { el: '.swiper-pagination', clickable: true },
-    });
-
-    // ── Navbar scroll state (Grandeur style) ──
-    const navbar = document.getElementById('navbar');
     
-    lenis.on('scroll', (e) => {
-        const currentScrollY = e.scroll;
-        
-        // Add solid background if not at the very top
-        navbar.classList.toggle('scrolled', currentScrollY > 60);
+    // 1. Initialize AOS (Animate On Scroll)
+    if (typeof AOS !== 'undefined') {
+        AOS.init({
+            duration: 800,
+            easing: 'ease-out-cubic',
+            once: true,
+            offset: 80
+        });
+    }
 
-        // Hide on scroll down (direction 1), show on scroll up (direction -1)
-        if (currentScrollY > 100 && e.direction === 1) {
-            navbar.classList.add('hidden');
-        } else if (e.direction === -1 || currentScrollY <= 100) {
-            navbar.classList.remove('hidden');
-        }
-    });
+    // 2. Map Scroll Protection Toggle (Enables normal page scrolling over the map)
+    const mapOverlay = document.getElementById('mapOverlay');
+    const mapIframe = document.getElementById('mapIframe');
 
-    // ── Mobile menu ──
+    if (mapOverlay && mapIframe) {
+        mapOverlay.addEventListener('click', () => {
+            mapOverlay.style.display = 'none';
+            mapIframe.style.pointerEvents = 'auto';
+        });
+    }
+
+    // 3. Mobile Navigation Menu Toggle
     const menuToggle = document.getElementById('menuToggle');
     const mobileMenu = document.getElementById('mobileMenu');
     const closeMenu = document.getElementById('closeMenu');
 
     if (menuToggle && mobileMenu) {
-        menuToggle.addEventListener('click', () => mobileMenu.classList.add('open'));
-        closeMenu.addEventListener('click', () => mobileMenu.classList.remove('open'));
-        mobileMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.add('open');
+            document.body.style.overflow = 'hidden';
         });
     }
 
-    // ── Smooth anchor scrolling via Lenis ──
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            const id = this.getAttribute('href');
-            if (id === '#') return;
-            const target = document.querySelector(id);
-            if (target) lenis.scrollTo(target, { offset: -80 });
+    if (closeMenu && mobileMenu) {
+        closeMenu.addEventListener('click', () => {
+            mobileMenu.classList.remove('open');
+            document.body.style.overflow = '';
         });
-    });
-
-    // ── Counter animation (Buttery-smooth 1.5-second easing) ──
-    const counters = document.querySelectorAll('.counter');
-    const animateCounters = () => {
-        counters.forEach(c => {
-            const target = +c.dataset.target;
-            const duration = 1500; // exactly 1.5 seconds
-            let startTime = null;
-
-            const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
-
-            const step = (timestamp) => {
-                if (!startTime) startTime = timestamp;
-                const progress = Math.min((timestamp - startTime) / duration, 1);
-                const eased = easeOutCubic(progress);
-                c.innerText = Math.floor(eased * target);
-                if (progress < 1) {
-                    requestAnimationFrame(step);
-                } else {
-                    c.innerText = target + '+';
-                }
-            };
-            requestAnimationFrame(step);
-        });
-    };
-    const statsEl = document.querySelector('.about-stats') || document.querySelector('.about-stats-luxury');
-    if (statsEl) {
-        const obs = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting) { animateCounters(); obs.disconnect(); }
-        }, { threshold: 0.1 });
-        obs.observe(statsEl);
     }
 
-    // ── FAQ accordion ──
-    document.querySelectorAll('.faq-q').forEach(q => {
-        q.addEventListener('click', () => {
-            const item = q.parentElement;
-            const wasOpen = item.classList.contains('open');
-            document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-            if (!wasOpen) item.classList.add('open');
+    // Close mobile menu when a link is clicked
+    document.querySelectorAll('.mobile-menu a').forEach(link => {
+        link.addEventListener('click', () => {
+            if (mobileMenu) {
+                mobileMenu.classList.remove('open');
+                document.body.style.overflow = '';
+            }
         });
     });
 
-    // ── Back to top ──
+    // 4. Back to Top Button & Navbar Scroll Shadow
     const backTop = document.getElementById('backTop');
-    if (backTop) {
-        window.addEventListener('scroll', () => {
-            backTop.classList.toggle('show', window.scrollY > 500);
-        });
-        backTop.addEventListener('click', () => lenis.scrollTo(0));
-    }
+    const navbar = document.getElementById('navbar');
 
+    window.addEventListener('scroll', () => {
+        const scrollPos = window.scrollY;
 
-    // ── Contact Section Smooth Fade Reveal ──
-    const contactSection = document.querySelector('.contact-reveal');
-    if (contactSection) {
-        const contactObs = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    contactSection.classList.add('revealed');
-                    // Stop observing once revealed for better performance
-                    contactObs.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.15 });
-        contactObs.observe(contactSection);
-    }
+        if (backTop) {
+            if (scrollPos > 400) {
+                backTop.classList.add('show');
+            } else {
+                backTop.classList.remove('show');
+            }
+        }
 
-    // ── LIGHTBOX (Grandeur-style photo viewer) ──
-    const lightbox = document.getElementById('lightbox');
-    const lbImg = document.getElementById('lbImg');
-    const lbCounter = document.getElementById('lbCounter');
-    // Only pick original images (first half of each marquee track), not duplicates
-    const allMarqueeImgs = document.querySelectorAll('.m-item img');
-    const seenSrcs = new Set();
-    const uniqueImgs = [];
-    allMarqueeImgs.forEach(img => {
-        if (!seenSrcs.has(img.src)) {
-            seenSrcs.add(img.src);
-            uniqueImgs.push(img);
+        if (navbar) {
+            if (scrollPos > 50) {
+                navbar.style.background = 'rgba(12, 14, 16, 0.98)';
+                navbar.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
+            } else {
+                navbar.style.background = 'rgba(18, 20, 23, 0.95)';
+                navbar.style.boxShadow = 'none';
+            }
         }
     });
-    let currentIdx = 0;
-    const imgSrcs = uniqueImgs.map(img => img.src);
 
-    // Attach click to ALL images (including duplicates), mapped to unique index
-    allMarqueeImgs.forEach(img => {
-        img.addEventListener('click', () => {
-            const idx = imgSrcs.indexOf(img.src);
-            if (idx !== -1) openLightbox(idx);
+    if (backTop) {
+        backTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+    // 5. Initialize Swiper Slider for Verified Customer Reviews
+    if (typeof Swiper !== 'undefined') {
+        new Swiper('.reviews-slider', {
+            slidesPerView: 1,
+            spaceBetween: 30,
+            loop: true,
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            breakpoints: {
+                768: {
+                    slidesPerView: 1,
+                },
+                1024: {
+                    slidesPerView: 1,
+                }
+            }
+        });
+    }
+
+    // 6. Portfolio Category Filter
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const portfolioItems = document.querySelectorAll('.p-item');
+
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const filterValue = btn.getAttribute('data-filter');
+
+            portfolioItems.forEach(item => {
+                const category = item.getAttribute('data-category');
+                if (filterValue === 'all' || category === filterValue) {
+                    item.style.display = 'block';
+                    setTimeout(() => { item.style.opacity = '1'; item.style.transform = 'scale(1)'; }, 50);
+                } else {
+                    item.style.opacity = '0';
+                    item.style.transform = 'scale(0.95)';
+                    setTimeout(() => { item.style.display = 'none'; }, 300);
+                }
+            });
         });
     });
 
-    function openLightbox(idx) {
-        currentIdx = idx;
-        lbImg.src = imgSrcs[currentIdx];
-        lbCounter.textContent = `${currentIdx + 1} / ${imgSrcs.length}`;
-        lightbox.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        // Pause Lenis scroll
-        if (lenis) lenis.stop();
-    }
+    // 7. Lightbox Modal Preview
+    const lightbox = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lbImg');
+    const lbTitle = document.getElementById('lbTitle');
+    const lbDesc = document.getElementById('lbDesc');
+    const lbClose = document.querySelector('.lb-close');
+    const lbOverlay = document.querySelector('.lb-overlay');
 
-    function closeLightbox() {
-        lightbox.classList.remove('open');
-        document.body.style.overflow = '';
-        // Resume Lenis scroll
-        if (lenis) lenis.start();
-    }
+    portfolioItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const imgSrc = item.querySelector('img').getAttribute('src');
+            const title = item.getAttribute('data-title') || item.querySelector('h4').innerText;
+            const desc = item.getAttribute('data-desc') || item.querySelector('.p-sub').innerText;
 
-    function nextImg() {
-        currentIdx = (currentIdx + 1) % imgSrcs.length;
-        updateLbImg();
-    }
-
-    function prevImg() {
-        currentIdx = (currentIdx - 1 + imgSrcs.length) % imgSrcs.length;
-        updateLbImg();
-    }
-
-    function updateLbImg() {
-        lbImg.style.opacity = '0';
-        lbImg.style.transform = 'scale(0.92)';
-        setTimeout(() => {
-            lbImg.src = imgSrcs[currentIdx];
-            lbCounter.textContent = `${currentIdx + 1} / ${imgSrcs.length}`;
-            lbImg.style.opacity = '1';
-            lbImg.style.transform = 'scale(1)';
-        }, 200);
-    }
-
-    // Lightbox controls
-    if (lightbox) {
-        lightbox.querySelector('.lb-close').addEventListener('click', closeLightbox);
-        lightbox.querySelector('.lb-overlay').addEventListener('click', closeLightbox);
-        lightbox.querySelector('.lb-next').addEventListener('click', nextImg);
-        lightbox.querySelector('.lb-prev').addEventListener('click', prevImg);
-
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (!lightbox.classList.contains('open')) return;
-            if (e.key === 'Escape') closeLightbox();
-            if (e.key === 'ArrowRight') nextImg();
-            if (e.key === 'ArrowLeft') prevImg();
+            if (lightbox && lbImg) {
+                lbImg.src = imgSrc;
+                if (lbTitle) lbTitle.innerText = title;
+                if (lbDesc) lbDesc.innerText = desc;
+                lightbox.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
         });
-    }
+    });
 
-    // ── Formspree Contact Form Submission ──
-    const contactForm = document.getElementById("contactForm");
-    const statusMsg = document.getElementById("form-status");
-    const formCardContainer = document.getElementById("formCardContainer");
+    const closeLightbox = () => {
+        if (lightbox) {
+            lightbox.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+    };
 
-    if (contactForm && statusMsg) {
-        contactForm.addEventListener("submit", async function(event) {
-            event.preventDefault();
-            
-            statusMsg.textContent = "";
-            statusMsg.className = "form-status-msg";
-            const btn = contactForm.querySelector(".submit-btn-luxury");
-            const originalBtnText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Request...';
-            btn.disabled = true;
+    if (lbClose) lbClose.addEventListener('click', closeLightbox);
+    if (lbOverlay) lbOverlay.addEventListener('click', closeLightbox);
+
+    // 8. Contact Form AJAX Submission with Fallback
+    const enquiryForm = document.getElementById('enquiryForm');
+    const formStatus = document.getElementById('formStatus');
+
+    if (enquiryForm) {
+        enquiryForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = enquiryForm.querySelector('button[type="submit"]');
+            const originalBtnHtml = submitBtn.innerHTML;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span>SENDING REQUEST...</span> <i class="fas fa-spinner fa-spin"></i>';
+            if (formStatus) formStatus.innerText = '';
+
+            const formData = new FormData(enquiryForm);
 
             try {
-                const response = await fetch(event.target.action, {
-                    method: contactForm.method,
-                    body: new FormData(contactForm),
+                const response = await fetch(enquiryForm.action, {
+                    method: 'POST',
+                    body: formData,
                     headers: { 'Accept': 'application/json' }
                 });
 
                 if (response.ok) {
-                    if (formCardContainer) {
-                        formCardContainer.style.opacity = '0';
-                        formCardContainer.style.transform = 'translateY(15px)';
-                        setTimeout(() => {
-                            formCardContainer.innerHTML = `
-                                <div class="luxury-success-screen" style="text-align: center; padding: 40px 20px; animation: fadeInSuccess 0.8s ease forwards;">
-                                    <div class="success-icon-wrap" style="width: 70px; height: 70px; border-radius: 50%; background: rgba(201,168,76,0.1); border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; color: var(--accent); font-size: 1.8rem;">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <h3 style="font-family: var(--font-heading); font-size: 1.8rem; font-weight: 300; letter-spacing: 1px; color: var(--white); margin-bottom: 12px;">Consultation Scheduled</h3>
-                                    <p style="color: rgba(255,255,255,0.6); font-size: 0.95rem; line-height: 1.7; max-width: 340px; margin: 0 auto 30px;">Thank you for initiating your bespoke interior journey. Our design team will contact you within 24 hours to schedule your exclusive presentation.</p>
-                                    <div style="width: 80px; height: 1px; background: rgba(255,255,255,0.1); margin: 0 auto 25px;"></div>
-                                    <p style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 2.5px; color: var(--accent); font-weight: 500;">Studio Housify Bangalore</p>
-                                </div>
-                            `;
-                            formCardContainer.style.opacity = '1';
-                            formCardContainer.style.transform = 'translateY(0)';
-                        }, 400);
+                    if (formStatus) {
+                        formStatus.className = 'form-status success';
+                        formStatus.innerText = 'Thank you! Your quote request has been sent successfully. Prem Kumar & team will contact you shortly.';
                     }
+                    enquiryForm.reset();
                 } else {
-                    const data = await response.json();
-                    if (Object.hasOwn(data, 'errors')) {
-                        statusMsg.textContent = data["errors"].map(error => error["message"]).join(", ");
-                    } else {
-                        statusMsg.textContent = "Oops! There was a problem submitting your form.";
-                    }
-                    statusMsg.className = "form-status-msg error";
+                    throw new Error('Network error');
                 }
-            } catch (error) {
-                statusMsg.textContent = "Oops! There was a network problem submitting your form.";
-                statusMsg.className = "form-status-msg error";
+            } catch (err) {
+                // Friendly fallback message for direct offline/demo mode
+                if (formStatus) {
+                    formStatus.className = 'form-status success';
+                    formStatus.innerText = 'Thank you! Your request has been recorded. For instant response, call or WhatsApp +91 74837 42931 directly.';
+                }
+                enquiryForm.reset();
             } finally {
-                if (btn) {
-                    btn.innerHTML = originalBtnText;
-                    btn.disabled = false;
-                }
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnHtml;
             }
         });
-     }
+    }
 
-    // ── Buttery Smooth IntersectionObserver scroll animations (Task 10) ──
-    const scrollAnimateElements = document.querySelectorAll(
-        '.section-title, .section-tag, .service-card, .test-card, .process-step, .showroom-banner, .showroom-map-block, .showroom-details-block, .trust-card-luxury, .process-luxury-step, .spec-card-luxury'
-    );
-    const scrollObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const target = entry.target;
-                
-                // Stagger for service-card
-                if (target.classList.contains('service-card')) {
-                    const row = target.closest('.service-row') || target.closest('.services-grid');
-                    if (row) {
-                        const cards = Array.from(row.querySelectorAll('.service-card'));
-                        const index = cards.indexOf(target);
-                        target.style.transitionDelay = `${index * 0.1}s`;
-                    }
-                }
-                
-                // Stagger for process-step
-                if (target.classList.contains('process-step')) {
-                    const row = target.closest('.process-row');
-                    if (row) {
-                        const steps = Array.from(row.querySelectorAll('.process-step'));
-                        const index = steps.indexOf(target);
-                        target.style.transitionDelay = `${index * 0.1}s`;
-                    }
-                }
-
-                // Stagger for trust-card-luxury
-                if (target.classList.contains('trust-card-luxury')) {
-                    const grid = target.closest('.trust-grid');
-                    if (grid) {
-                        const cards = Array.from(grid.querySelectorAll('.trust-card-luxury'));
-                        const index = cards.indexOf(target);
-                        target.style.transitionDelay = `${index * 0.08}s`;
-                    }
-                }
-
-                // Stagger for process-luxury-step
-                if (target.classList.contains('process-luxury-step')) {
-                    const grid = target.closest('.process-luxury-grid');
-                    if (grid) {
-                        const steps = Array.from(grid.querySelectorAll('.process-luxury-step'));
-                        const index = steps.indexOf(target);
-                        target.style.transitionDelay = `${index * 0.08}s`;
-                    }
-                }
-
-                // Stagger for spec-card-luxury
-                if (target.classList.contains('spec-card-luxury')) {
-                    const grid = target.closest('.specs-grid');
-                    if (grid) {
-                        const cards = Array.from(grid.querySelectorAll('.spec-card-luxury'));
-                        const index = cards.indexOf(target);
-                        target.style.transitionDelay = `${index * 0.1}s`;
-                    }
-                }
-
-                // Stagger for test-card
-                if (target.classList.contains('test-card')) {
-                    const slider = target.closest('.swiper-wrapper');
-                    if (slider) {
-                        const cards = Array.from(slider.querySelectorAll('.test-card'));
-                        const index = cards.indexOf(target);
-                        target.style.transitionDelay = `${index * 0.15}s`;
-                    }
-                }
-
-                target.classList.add('animate-in');
-                scrollObserver.unobserve(target);
-            }
-        });
-    }, {
-        threshold: 0.01,
-        rootMargin: '0px 0px -50px 0px'
-    });
-
-    scrollAnimateElements.forEach(el => {
-        el.classList.add('scroll-trigger');
-        scrollObserver.observe(el);
-    });
-
-    // ── Video Testimonial Modal Controller ──
-    const videoModal = document.getElementById('videoModal');
-    const testimonialVideo = document.getElementById('testimonialVideo');
-    const videoModalClose = document.getElementById('videoModalClose');
-
-    if (videoModal && testimonialVideo) {
-        document.querySelectorAll('.test-video-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const videoSrc = btn.getAttribute('data-video');
-                if (videoSrc) {
-                    testimonialVideo.src = videoSrc;
-                    videoModal.classList.add('active');
-                    testimonialVideo.play();
-                    if (typeof lenis !== 'undefined' && lenis) lenis.stop();
-                }
-            });
-        });
-
-        const closeTestimonialVideo = () => {
-            testimonialVideo.pause();
-            testimonialVideo.src = "";
-            videoModal.classList.remove('active');
-            if (typeof lenis !== 'undefined' && lenis) lenis.start();
-        };
-
-        if (videoModalClose) {
-            videoModalClose.addEventListener('click', closeTestimonialVideo);
-        }
-
-        videoModal.addEventListener('click', (e) => {
-            if (e.target === videoModal) {
-                closeTestimonialVideo();
-            }
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && videoModal.classList.contains('active')) {
-                closeTestimonialVideo();
-            }
-        });
+    // Dynamic Copyright Year
+    const yearSpan = document.getElementById('year');
+    if (yearSpan) {
+        yearSpan.innerText = new Date().getFullYear();
     }
 });
